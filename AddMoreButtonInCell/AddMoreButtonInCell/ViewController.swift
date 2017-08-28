@@ -14,25 +14,34 @@ class ViewController: UIViewController {
      let mobImages = [UIImage(named: "iphone"),UIImage(named: "lava"),UIImage(named: "mi"),UIImage(named: "samsung"),UIImage(named: "sony"),UIImage(named: "vivo"),UIImage(named: "window")] //
     var hieght: CGFloat = 200
     var expandedCells = [Int]()
-    var isSelect = false
+    var moreBtnName = [String]()
 //=========== Outlet's =================
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
+        for tempIndex in 0..<itemList.count{
+            moreBtnName.insert("More", at: tempIndex)
+        }
    }
     @IBAction func moreButtonTapped(_ sender: UIButton) {
 //==== Create cellObject and indexPath-------------
         guard   let cell = getCell(sender) as? CellData else{fatalError()}
-//        guard let indexPath = self.tableView.indexPath(for: cell) else {fatalError()}
+        guard let indexPath = self.tableView.indexPath(for: cell) else {fatalError()}
 //  ==============================================================
-        if isSelect == false{
-            cell.moreButton.setTitle("Hide", for: .normal)
-            isSelect = true
-        }else{
-            cell.moreButton.setTitle("more", for: .normal)
-            isSelect = false
+//        if isSelect == false{
+//            cell.moreButton.setTitle("Hide", for: .normal)
+//            isSelect = true
+//        }else{
+//            cell.moreButton.setTitle("more", for: .normal)
+//            isSelect = false
+//        }
+        if moreBtnName[indexPath.row] == "More"{
+            moreBtnName[indexPath.row] = "Hide"
+        }
+        else if moreBtnName[indexPath.row] == "Hide"{
+            moreBtnName[indexPath.row] = "More"
         }
         
         if expandedCells.contains(sender.tag) {
@@ -53,7 +62,7 @@ extension ViewController: UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
        
       if expandedCells.contains(indexPath.row) {
-            return 200
+            return UITableViewAutomaticDimension
         } else {
             return 120
         }
@@ -64,6 +73,7 @@ extension ViewController: UITableViewDataSource,UITableViewDelegate{
             fatalError()
         }
         cell.moreButton.tag = indexPath.row
+        cell.moreButton.setTitle(moreBtnName[indexPath.row], for: .normal)
         cell.imageIcon.image = mobImages[indexPath.row]
         cell.nameLabel.text = itemList[indexPath.row]
         cell.hideImageIcon.image = mobImages[indexPath.row]
